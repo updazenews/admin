@@ -1,0 +1,79 @@
+:root {
+  --updaze-primary: #0d6efd;
+  --updaze-accent: #dc3545;
+  --updaze-bg: #ffffff;
+  --updaze-text: #212529;
+}
+
+body {
+  background-color: var(--updaze-bg);
+  color: var(--updaze-text);
+  font-family: "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.brand-title {
+  color: var(--updaze-primary);
+  font-weight: 800;
+  letter-spacing: 0.4px;
+}
+
+.brand-title:hover,
+.brand-title:focus {
+  color: var(--updaze-primary);
+}
+
+.hero {
+  border: 1px solid rgba(13, 110, 253, 0.12);
+  border-radius: 1rem;
+  background: linear-gradient(135deg, rgba(13, 110, 253, 0.08), rgba(13, 110, 253, 0.02));
+  padding: clamp(1.5rem, 2.5vw, 3rem);
+  margin-bottom: 2rem;
+}
+
+.breaking-badge {
+  background-color: var(--updaze-accent);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.post-card {
+  border: 1px solid #e9ecef;
+  border-radius: 0.9rem;
+  box-shadow: 0 0.35rem 1.2rem rgba(0, 0, 0, 0.06);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  height: 100%;
+}
+
+.post-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 0.75rem 1.4rem rgba(0, 0, 0, 0.1);
+}
+
+.post-title {
+  font-size: 1.3rem;
+  line-height: 1.3;
+}
+
+.news-article {
+  max-width: 780px;
+}
+
+.featured-image {
+  max-height: 460px;
+  object-fit: cover;
+}
+
+.article-content p {
+  margin-bottom: 1.25rem;
+}
+
+@media (max-width: 767px) {
+  .hero {
+    padding: 1.25rem;
+  }
+
+  .post-title {
+    font-size: 1.15rem;
+  }
+}
