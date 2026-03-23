@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Updaze News CMS</title>
+    <style>
+      :root {
+        --updaze-primary: #0d6efd;
+        --updaze-accent: #dc3545;
+        --updaze-bg: #ffffff;
+        --updaze-text: #212529;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        background: var(--updaze-bg);
+        color: var(--updaze-text);
+      }
+
+      .auth-shell {
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: 1.5rem;
+      }
+
+      .auth-card {
+        width: min(460px, 100%);
+        border: 1px solid #e9ecef;
+        border-radius: 1rem;
+        box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.08);
+        padding: 1.5rem;
+      }
+
+      .badge {
+        display: inline-block;
+        background: var(--updaze-accent);
+        color: #fff;
+        border-radius: 999px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        padding: 0.3rem 0.65rem;
+      }
+
+      h1 {
+        margin: 0.8rem 0;
+        color: var(--updaze-primary);
+      }
+
+      p {
+        margin-top: 0;
+        color: #6c757d;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+      }
+
+      button {
+        border: 0;
+        border-radius: 0.5rem;
+        padding: 0.65rem 0.95rem;
+        font-size: 0.95rem;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      .btn-primary {
+        background: var(--updaze-primary);
+        color: #fff;
+      }
+
+      .btn-secondary {
+        background: #f1f3f5;
+        color: #343a40;
+      }
+
+      .status {
+        margin-top: 0.85rem;
+        font-size: 0.9rem;
+      }
+
+      #cms-root {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <section id="auth-root" class="auth-shell">
+      <div class="auth-card">
+        <span class="badge">Breaking News Desk</span>
+        <h1>Updaze News CMS</h1>
+        <p>Sign in to access the editorial publishing panel.</p>
+
+        <div class="actions">
+          <button id="signInBtn" class="btn-primary" type="button">Sign in with Google</button>
+          <button id="signOutBtn" class="btn-secondary" type="button" hidden>Sign out</button>
+        </div>
+
+        <p id="status" class="status">Checking authentication…</p>
+      </div>
+    </section>
+
+    <div id="cms-root" aria-hidden="true"></div>
+
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+      import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-analytics.js";
+      import {
+        getAuth,
+        GoogleAuthProvider,
+        onAuthStateChanged,
+        signInWithPopup,
+        signOut
+      } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyDiRXSGIXw8lbbxx_jZk0VOyCzmt0rasLQ",
+        authDomain: "updaze-news.firebaseapp.com",
+        projectId: "updaze-news",
+        storageBucket: "updaze-news.firebasestorage.app",
+        messagingSenderId: "360342332196",
+        appId: "1:360342332196:web:732d9972e8d7f69a1209b1",
+        measurementId: "G-PHWVGJ3Q72"
+      };
+
+      const app = initializeApp(firebaseConfig);
+      getAnalytics(app);
+
+      const auth = getAuth(app);
+      const provider = new GoogleAuthProvider();
+
+      const authRoot = document.getElementById("auth-root");
+      const cmsRoot = document.getElementById("cms-root");
+      const status = document.getElementById("status");
+      const signInBtn = document.getElementById("signInBtn");
+      const signOutBtn = document.getElementById("signOutBtn");
+
+      const loadCms = () => {
+        if (window.CMS) return;
+
+        const script = document.createElement("script");
+        script.src = "https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js";
+        script.async = true;
+        document.body.appendChild(script);
+      };
+
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          status.textContent = `Signed in as ${user.email}. Loading CMS…`;
+          signInBtn.hidden = true;
+          signOutBtn.hidden = false;
+          authRoot.style.display = "none";
+          cmsRoot.style.display = "block";
+          cmsRoot.setAttribute("aria-hidden", "false");
+          loadCms();
+          return;
+        }
+
+        status.textContent = "You must sign in before accessing the CMS.";
+        signInBtn.hidden = false;
+        signOutBtn.hidden = true;
+        authRoot.style.display = "grid";
+        cmsRoot.style.display = "none";
+        cmsRoot.setAttribute("aria-hidden", "true");
+      });
+
+      signInBtn.addEventListener("click", async () => {
+        try {
+          await signInWithPopup(auth, provider);
+        } catch (error) {
+          status.textContent = `Sign-in failed: ${error.message}`;
+        }
+      });
+
+      signOutBtn.addEventListener("click", async () => {
+        await signOut(auth);
+      });
+    </script>
+  </body>
+</html>

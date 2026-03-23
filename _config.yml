@@ -1,0 +1,6 @@
+title: Updaze News
+description: Latest headlines and in-depth reporting from Updaze News.
+baseurl: ""
+url: ""
+permalink: /:year/:month/:day/:title/
+markdown: kramdown
